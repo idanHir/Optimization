@@ -1,0 +1,13 @@
+Each group gets two articles with two learners
+The goal is to implement them
+However, just implementing will barely manage to scratch a passing grade
+The point to the think creatively -
+See how we can take the two learners we got in the articles, and make them more interesting:
+* Change the features
+* Change the learn rate
+* Do stuff that are learned differently
+* we are NOT expected to change the network itself
+* we ARE expected to change the parameters the optimizers receive
+(Generally) The first learner is supposed to be first order, and the second is second order
+We need to improve the learners and achieve a low loss with them
+DONT OVERFIT - Moral tests the optimizers on a different dataset
