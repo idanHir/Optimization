@@ -1,3 +1,5 @@
+* Tirgul week 2 (?) instructions *
+
 Each group gets two articles with two learners
 The goal is to implement them
 However, just implementing will barely manage to scratch a passing grade
@@ -11,3 +13,57 @@ See how we can take the two learners we got in the articles, and make them more 
 (Generally) The first learner is supposed to be first order, and the second is second order
 We need to improve the learners and achieve a low loss with them
 DONT OVERFIT - Moral tests the optimizers on a different dataset
+
+* Tirgul 17-12-2025 instructions *
+We use the oracle to extract the {loss, gradient, hessian}
+
+Moral wants us to use train_loader and small_train_loader only!
+
+Dataloader is where our pictures are saved, and in each train it sends pictures in a random manner to the neural network
+
+Small train loader is meant to ease up on the RAM when we want to compute Hessians.
+Instead of containing 6000 pictures, it only contains 100 pictures - Contact Moral if we still don't manage
+
+gd_step (GD) and newton_step are two optimizers Moral implemented
+
+Moral discourages us from using AI to implement the optimizer - they're all
+built up on the same thing, if all of the groups return the same solution it's obvious
+
+run_model_optimization_experiment() is the function that runs the model. It returns the losses.
+We need to change the call for optimizer_step, referring to this:
+
+            # 2. Optimization step
+            with torch.no_grad():
+                if optimizer_type == 'gd':
+                    for param, grad in zip(model.parameters(), grads):
+                -->     param.data = gd_step(param.data, grad, learning_rate) <--
+
+                elif optimizer_type == 'newton':
+                    if hessians is None:
+                        raise ValueError("Hessian missing for Newton method")
+                    for param, grad, hessian in zip(model.parameters(), grads, hessians):
+                -->     param.data = newton_step(param.data, grad, hessian, learning_rate) <--
+
+                else:
+                    raise ValueError("Invalid optimizer type")
+
+Other than that we're not supposed to change anything in the function.
+We *are* supposed to change the param.data !
+The function calculates the loss and prints it nicely while it runs, and also hands out time calculation
+
+We want to use as less memory as possible, and in as less time as possible!
+
+When we present the project we need to present the challenges we had in terms of memory consumption Vs Time consumption
+It should be included in both the interview and the presentation that we make
+
+In the following section we have the hyperparameters of the model, that's where we run it:
+* MSE loss - we get a picture, then we want to compare it to what we get in the end,
+and we want it to be as close as possible to the original. We go "pixel pixel", and compare them.
+* We can change the amount of epochs and the learn rate.
+* We are *not* supposed to touch the model or the criterion.
+
+After that we have visualizations for the results.
+
+For the presention:
+* We're supposed to explain the process - what worked, what didn't.
+* Make slides on what the optimizer is, we're supposed to "teach" moral about it (she wants to know if we read and understood the article)
